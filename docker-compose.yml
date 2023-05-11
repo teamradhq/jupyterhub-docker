@@ -1,0 +1,13 @@
+version: '3'
+services:
+
+  jupyterlab:
+    image: jupyter/datascience-notebook:latest
+    container_name: jupyterlab
+    ports:
+      - "${JUPYTER_PORT:8888}:8888"
+    volumes:
+      - ./jupyter-data:/home/jovyan/work/persist
+    environment:
+      JUPYTER_ENABLE_LAB: "${JUPYTER_ENABLE_LAB}"
+      JUPYTER_TOKEN: "${JUPYTER_TOKEN}"

@@ -1,2 +1,8 @@
 .idea/
+
+# Environment Files
+.env
 certs/
+
+# Persistent Lab Files
+jupyter-data/
