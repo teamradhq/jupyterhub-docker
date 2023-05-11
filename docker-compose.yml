@@ -16,17 +16,38 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  jupyterhub:
+    build:
+      context: ./jupyterhub
+      dockerfile: Dockerfile
+      args:
+        HUB_ADMIN_USER: "${HUB_ADMIN_USER:-admin}"
+        HUB_ADMIN_PASSWORD: "${HUB_ADMIN_PASSWORD:-secret}"
+    depends_on:
+      - reverse-proxy
+    environment:
+        HUB_ADMIN_USER: "${HUB_ADMIN_USER:-admin}"
+        HUB_JUPYTER_IMAGE: jupyterlab
+        HUB_NETWORK_NAME: "${COMPOSE_PROJECT_NAME}_default:-hub_default"
+        HOST: "${HUB_HOST:-hub.docker.localhost}"
+    labels:
+      - traefik.http.routers.hub.rule=Host(`${HUB_HOST:-hub.docker.localhost}`)
+      - traefik.http.services.hub.loadbalancer.server.port=8000
+      - traefik.http.routers.hub.entrypoints=http,https
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   jupyterlab:
     image: jupyter/datascience-notebook:latest
     container_name: jupyterlab
     depends_on:
       - reverse-proxy
     labels:
-      - traefik.http.routers.jupyter.rule=Host(`${JUPYTER_LAB_HOST:-jupyterlab.docker.localhost}`)
+      - traefik.http.routers.jupyter.rule=Host(`${LAB_HOST:-jupyterlab.docker.localhost}`)
       - traefik.http.services.jupyter.loadbalancer.server.port=8888
       - traefik.http.routers.jupyter.entrypoints=http,https
     volumes:
       - ./jupyter-data:/home/jovyan/work/persist
     environment:
-      JUPYTER_ENABLE_LAB: "${JUPYTER_ENABLE_LAB}"
-      JUPYTER_TOKEN: "${JUPYTER_TOKEN}"
+      JUPYTER_ENABLE_LAB: "${LAB_ENABLE}"
+      JUPYTER_TOKEN: "${LAB_TOKEN}"
