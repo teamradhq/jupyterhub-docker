@@ -15,10 +15,12 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: on-failure
 
   jupyterhub:
+    container_name: hub
     build:
-      context: ./jupyterhub
+      context: hub
       dockerfile: Dockerfile
       args:
         HUB_ADMIN_USER: "${HUB_ADMIN_USER:-admin}"
@@ -27,8 +29,9 @@ services:
       - reverse-proxy
     environment:
         HUB_ADMIN_USER: "${HUB_ADMIN_USER:-admin}"
-        HUB_JUPYTER_IMAGE: jupyterlab
-        HUB_NETWORK_NAME: "${COMPOSE_PROJECT_NAME}_default:-hub_default"
+        HUB_JUPYTER_IMAGE: lab
+        HUB_NETWORK_NAME: "hub_network"
+        HUB_IP: hub
         HOST: "${HUB_HOST:-hub.docker.localhost}"
     labels:
       - traefik.http.routers.hub.rule=Host(`${HUB_HOST:-hub.docker.localhost}`)
@@ -36,14 +39,16 @@ services:
       - traefik.http.routers.hub.entrypoints=http,https
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: on-failure
 
   jupyterlab:
-    image: jupyter/datascience-notebook:latest
-    container_name: jupyterlab
+    build: lab
+    image: lab
+    container_name: lab
     depends_on:
       - reverse-proxy
     labels:
-      - traefik.http.routers.jupyter.rule=Host(`${LAB_HOST:-jupyterlab.docker.localhost}`)
+      - traefik.http.routers.jupyter.rule=Host(`${LAB_HOST:-lab.docker.localhost}`)
       - traefik.http.services.jupyter.loadbalancer.server.port=8888
       - traefik.http.routers.jupyter.entrypoints=http,https
     volumes:
@@ -51,3 +56,8 @@ services:
     environment:
       JUPYTER_ENABLE_LAB: "${LAB_ENABLE}"
       JUPYTER_TOKEN: "${LAB_TOKEN}"
+
+networks:
+  hub_network:
+    external:
+      name: hub_network

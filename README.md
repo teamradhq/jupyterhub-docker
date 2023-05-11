@@ -48,6 +48,12 @@ The Traefik Admin can be access at:
 
 Copy `.example.env` to `env` and edit the values to suit your needs. 
 
+Create Docker Network:
+
+```bash
+docker network create hub_network
+```
+
 Run Docker Compose: 
 
 ```bash
