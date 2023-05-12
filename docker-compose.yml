@@ -67,5 +67,4 @@ services:
 
 networks:
   hub_network:
-    external:
-      name: hub_network
+    external: true
