@@ -50,6 +50,11 @@ RUN conda install --quiet --yes \
     conda clean -tipsy && \
     fix-permissions $CONDA_DIR
 
+# Update Node to LTS and install IJavascript kernel
+RUN conda install --quiet --yes -c conda-forge nodejs=18 && \
+    ijsinstall && \
+    npm install -g ijavascript
+
 ENV CPATH=$CONDA_DIR/include
 
 
@@ -58,6 +63,8 @@ RUN pip install \
     scilab-kernel && \
     fix-permissions $CONDA_DIR
 
+USER root
+RUN sed -i 's/"\/usr\/bin\/sage"/"env", "PATH=\/usr\/local\/sbin:\/usr\/local\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin", "\/usr\/bin\/sage"/' /usr/share/jupyter/kernels/sagemath/kernel.json
 USER $NB_UID
 
 COPY ./conda-activate.sh /usr/local/bin/before-notebook.d/
