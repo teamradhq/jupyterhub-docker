@@ -16,7 +16,6 @@ RUN useradd -m ${HUB_ADMIN_USER} && \
     echo "${HUB_ADMIN_USER}:${HUB_ADMIN_PASSWORD}" | chpasswd
 
 RUN pip install \
-    jupyterhub-idle-culler \
     dockerspawner
 
 CMD ["jupyterhub"]

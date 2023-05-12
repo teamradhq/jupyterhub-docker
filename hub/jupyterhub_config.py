@@ -9,14 +9,3 @@ c.JupyterHub.hub_ip = os.environ['HUB_IP']
 # Admin Access
 c.JupyterHub.admin_access = False
 c.Authenticator.admin_users = set(os.environ['HUB_ADMIN_USER'])
-
-c.JupyterHub.services = [
-    {
-        "name": "jupyterhub-idle-culler-service",
-        "command": [
-            sys.executable,
-            "-m", "jupyterhub_idle_culler",
-            "--timeout=3600",
-        ],
-    }
-]
