@@ -58,6 +58,7 @@ Build base Docker containers:
 
 ```bash
 docker build -t base-jupyter-hub -f base/hub/Dockerfile .
+docker build -t base-jupyter-lab -f base/lab/Dockerfile .
 ```
 
 Run Docker Compose: 
