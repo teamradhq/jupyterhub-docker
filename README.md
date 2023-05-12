@@ -54,6 +54,12 @@ Create Docker Network:
 docker network create hub_network
 ```
 
+Build base Docker containers:
+
+```bash
+docker build -t base-jupyter-hub -f base/hub/Dockerfile .
+```
+
 Run Docker Compose: 
 
 ```bash
