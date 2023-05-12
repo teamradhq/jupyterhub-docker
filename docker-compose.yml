@@ -15,6 +15,8 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - hub_network
     restart: on-failure
 
   jupyterhub:
@@ -25,8 +27,6 @@ services:
       args:
         HUB_ADMIN_USER: "${HUB_ADMIN_USER:-admin}"
         HUB_ADMIN_PASSWORD: "${HUB_ADMIN_PASSWORD:-secret}"
-    depends_on:
-      - reverse-proxy
     environment:
         HUB_ADMIN_USER: "${HUB_ADMIN_USER:-admin}"
         HUB_JUPYTER_IMAGE: lab
@@ -37,25 +37,33 @@ services:
       - traefik.http.routers.hub.rule=Host(`${HUB_HOST:-hub.docker.localhost}`)
       - traefik.http.services.hub.loadbalancer.server.port=8000
       - traefik.http.routers.hub.entrypoints=http,https
+    depends_on:
+      - reverse-proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - hub_network
     restart: on-failure
 
   jupyterlab:
     build: lab
     image: lab
     container_name: lab
-    depends_on:
-      - reverse-proxy
+    environment:
+      JUPYTER_ENABLE_LAB: "${LAB_ENABLE}"
+      JUPYTER_TOKEN: "${LAB_TOKEN}"
     labels:
       - traefik.http.routers.jupyter.rule=Host(`${LAB_HOST:-lab.docker.localhost}`)
       - traefik.http.services.jupyter.loadbalancer.server.port=8888
       - traefik.http.routers.jupyter.entrypoints=http,https
+    depends_on:
+      - reverse-proxy
     volumes:
       - ./jupyter-data:/home/jovyan/work/persist
-    environment:
-      JUPYTER_ENABLE_LAB: "${LAB_ENABLE}"
-      JUPYTER_TOKEN: "${LAB_TOKEN}"
+    networks:
+      - hub_network
+    command:
+      - echo
 
 networks:
   hub_network:
