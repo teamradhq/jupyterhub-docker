@@ -51,9 +51,8 @@ RUN conda install --yes -c conda-forge  \
     conda clean -tip && \
     fix-permissions $CONDA_DIR
 
-# Update Node to LTS and install IJavascript kernel
-RUN conda install --quiet --yes -c conda-forge nodejs=18 && \
-    npm install -g ijavascript && \
+# Install IJavascript kernel
+RUN npm install -g ijavascript && \
     ijsinstall
 
 ENV CPATH=$CONDA_DIR/include
@@ -62,6 +61,12 @@ RUN pip install \
     pari_jupyter \
     scilab-kernel && \
     fix-permissions $CONDA_DIR
+
+# Install Rust Kernel
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+    . $HOME/.cargo/env && \
+    cargo install evcxr_jupyter && \
+    evcxr_jupyter --install
 
 USER root
 
