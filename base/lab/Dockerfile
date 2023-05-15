@@ -14,16 +14,16 @@ RUN apt-get update && \
     libpari-dev \
     sagemath \
     sagemath-jupyter \
-    libgmp-dev && \
+    libgmp-dev \
+    gnupg \
+    netbase && \
+    curl -sSL https://get.haskellstack.org/ | sh && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 USER $NB_UID
 
-USER $NB_UID
-
 # Conda packages
-# Sage conflicts with the latest jupyterhub, thus we must relax the pinning
 RUN conda install --yes -c conda-forge  \
     nodejs=18 \
     r-base \
@@ -45,7 +45,6 @@ RUN conda install --yes -c conda-forge  \
     r-sparklyr \
     r-htmlwidgets \
     r-hexbin \
-#    julia  \
     jupyterhub \
     && \
     conda clean -tip && \
@@ -67,6 +66,15 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
     . $HOME/.cargo/env && \
     cargo install evcxr_jupyter && \
     evcxr_jupyter --install
+
+# Install Haskell Kernel
+
+ENV PATH=/home/jovyan/.local/bin:${PATH}
+
+RUN stack setup && \
+    stack install gtk2hs-buildtools && \
+    stack install --fast ihaskell && \
+    ihaskell install --stack
 
 USER root
 
