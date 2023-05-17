@@ -24,9 +24,6 @@ services:
     build:
       context: hub
       dockerfile: Dockerfile
-      args:
-        HUB_ADMIN_USER: "${HUB_ADMIN_USER:-admin}"
-        HUB_ADMIN_PASSWORD: "${HUB_ADMIN_PASSWORD:-secret}"
     environment:
         HUB_ADMIN_USER: "${HUB_ADMIN_USER:-admin}"
         HUB_JUPYTER_IMAGE: lab

@@ -2,11 +2,12 @@ FROM base-jupyter-hub
 
 COPY jupyterhub_config.py .
 
-# Create the new user and set the password
-ARG HUB_ADMIN_USER
-ARG HUB_ADMIN_PASSWORD
-RUN useradd -m ${HUB_ADMIN_USER} && \
-    echo "${HUB_ADMIN_USER}:${HUB_ADMIN_PASSWORD}" | chpasswd
+# Create hub user accounts
+COPY users.txt /tmp/users.txt
 
+RUN while IFS=: read -r username password; do \
+        useradd -m "$username" -p "$(openssl passwd -1 "$password")"; \
+    done < /tmp/users.txt && \
+    rm /tmp/users.txt
 
 CMD ["jupyterhub"]

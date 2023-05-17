@@ -33,7 +33,8 @@ The Traefik Admin can be access at:
 
 ### Environment
 
-Copy `.example.env` to `env` and edit the values to suit your needs.
+- Copy `.example.env` to `env` and edit the values to suit your needs.
+- Copy `lab/users.txt.example' to `lab/users.txt` and provide a list of usernames and passwords.
 
 #### Required Variables
 

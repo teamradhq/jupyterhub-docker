@@ -1,8 +1,8 @@
 .idea/
-
 # Environment Files
 .env
 certs/
+hub/users.txt
 
 # Persistent Lab Files
 data/
