@@ -50,9 +50,10 @@ RUN conda install --yes -c conda-forge  \
     conda clean -tip && \
     fix-permissions $CONDA_DIR
 
-# Install IJavascript kernel
-RUN npm install -g ijavascript && \
-    ijsinstall
+# Install IJavaScript & ITypeScript kernels
+RUN npm install -g ijavascript itypescript && \
+    ijsinstall && \
+    its --install=local
 
 ENV CPATH=$CONDA_DIR/include
 
@@ -68,7 +69,6 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
     evcxr_jupyter --install
 
 # Install Haskell Kernel
-
 ENV PATH=/home/jovyan/.local/bin:${PATH}
 
 RUN stack setup && \
