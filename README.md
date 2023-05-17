@@ -75,7 +75,6 @@ docker network create hub_network
 ```
 
 
-
 #### Build Base Containers
 
 Docker compose will build services from a collection of `base` images. In order for the project
@@ -88,13 +87,17 @@ docker build -t base-jupyter-lab -f base/lab/Dockerfile .
 
 These are located in `base/hub` and `base/lab` respectively.
 
-When adding new features to a container, it is recommended to test these in the `hub/Dockerfile` and
-`lab/Dockerfile` images respectively. These will rebuild much faster than the `base` images allowing 
-you to test your changes faster. 
+You can also call `bin/build` from the project root to build all base images at once. 
+This will run the above commands for you. You can also pass any additional arguments 
+for `docker build` and they will be passed to each command:
 
-Once the desired change has been implemented successfully, you should integrate them with the appropriate
-`base` image and rebuild it and the compose project.
+```bash
+# Build all base images from cached
+bin/build
 
+# Build all base images without cached
+bin/build --no-cache
+```
 
 
 #### Running Docker Compose: 
@@ -122,5 +125,14 @@ To access hub:
 - Login with admin credentials.
 
 
+---
 
 
+## Developing
+
+When adding new features to a container, it is recommended to test these in the `hub/Dockerfile` and
+`lab/Dockerfile` images respectively. These will rebuild much faster than the `base` images allowing 
+you to test your changes faster. 
+
+Once the desired change has been implemented successfully, you should integrate them with the appropriate
+`base` image and rebuild it and the compose project.

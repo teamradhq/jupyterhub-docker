@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if [ "bin/build" != "$0" ]
+then
+    echo "Error!"
+    echo "This script must be executed from the root of the project"
+    exit 1
+fi
+
+if [ -z "$*" ]
+then
+    ARGS=""
+else
+    ARGS="$*"
+fi
+
+docker build $ARGS -t base-jupyter-hub -f base/hub/Dockerfile .
+docker build $ARGS -t base-jupyter-lab -f base/lab/Dockerfile .
+exit 0
