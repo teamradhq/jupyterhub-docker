@@ -33,6 +33,7 @@ services:
         HUB_NETWORK_NAME: "hub_network"
         HUB_IP: hub
         HOST: "${HUB_HOST:-hub.docker.localhost}"
+        HUB_HOST_DIR: "${HUB_HOST_DIR}"
     labels:
       - traefik.http.routers.hub.rule=Host(`${HUB_HOST:-hub.docker.localhost}`)
       - traefik.http.services.hub.loadbalancer.server.port=8000
@@ -50,16 +51,14 @@ services:
     image: lab
     container_name: lab
     environment:
-      JUPYTER_ENABLE_LAB: "${LAB_ENABLE}"
-      JUPYTER_TOKEN: "${LAB_TOKEN}"
+      JUPYTER_ENABLE_LAB: "${LAB_ENABLE:-yes}"
+      JUPYTER_TOKEN: "${LAB_TOKEN:-docker}"
     labels:
       - traefik.http.routers.jupyter.rule=Host(`${LAB_HOST:-lab.docker.localhost}`)
       - traefik.http.services.jupyter.loadbalancer.server.port=8888
       - traefik.http.routers.jupyter.entrypoints=http,https
     depends_on:
       - reverse-proxy
-    volumes:
-      - ./jupyter-data:/home/jovyan/work/persist
     networks:
       - hub_network
     command:

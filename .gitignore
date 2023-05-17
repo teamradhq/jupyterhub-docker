@@ -5,4 +5,4 @@
 certs/
 
 # Persistent Lab Files
-jupyter-data/
+data/
