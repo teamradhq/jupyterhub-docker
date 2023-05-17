@@ -46,6 +46,7 @@ RUN conda install --yes -c conda-forge  \
     r-htmlwidgets \
     r-hexbin \
     jupyterhub \
+    jupyterlab=4 \
     && \
     conda clean -tip && \
     fix-permissions $CONDA_DIR
